@@ -2,10 +2,7 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.model.entity.Person;
-import com.safetynet.alerts.model.response.ChildrenWithFamilyResponse;
-import com.safetynet.alerts.model.response.InhabitantsWithFireStationResponse;
-import com.safetynet.alerts.model.response.PersonNamesAndAgeResponse;
-import com.safetynet.alerts.model.response.PersonWithMedicalRecordResponse;
+import com.safetynet.alerts.model.response.*;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
 import com.safetynet.alerts.repository.interfaces.PersonRepository;
@@ -80,6 +77,30 @@ public class PersonService {
                         .collect(Collectors.toSet()))
                 .station(fireStationRepository.findStationByAddress(address))
                 .build();
+    }
+
+    public Set<InhabitantsResponse> getInhabitantsByStations(Set<Integer> stations) {
+        Set<String> addresses = stations.stream()
+                .map(fireStationRepository::findAddressesByStation)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+        Set<InhabitantsResponse> responses = new HashSet<>();
+        addresses.forEach(address -> {
+            Set<Person> persons = personRepository.findByAddress(address);
+            InhabitantsResponse response = InhabitantsResponse.builder().address(address).inhabitants(new HashSet<>()).build();
+            persons.forEach(person -> {
+                MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName());
+                response.getInhabitants().add(PersonWithMedicalRecordResponse.builder()
+                        .firstName(person.getFirstName())
+                        .lastName(person.getLastName())
+                        .phone(person.getPhone())
+                        .age(medicalRecord.getAge())
+                        .medicalRecord(medicalRecord.toResponse())
+                        .build());
+            });
+            responses.add(response);
+            });
+        return responses;
     }
 
 }
