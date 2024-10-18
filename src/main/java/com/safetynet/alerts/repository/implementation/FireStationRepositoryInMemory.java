@@ -24,4 +24,13 @@ public class FireStationRepositoryInMemory implements FireStationRepository {
                 .map(FireStation::getAddress)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public int findStationByAddress(String address) {
+        return fireStations.stream()
+                .filter(fireStation -> fireStation.getAddress().equals(address))
+                .map(FireStation::getStation)
+                .findFirst()
+                .orElse(0);
+    }
 }

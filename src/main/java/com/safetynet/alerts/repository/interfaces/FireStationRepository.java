@@ -8,4 +8,6 @@ import java.util.Set;
 @Repository
 public interface FireStationRepository {
     Set<String> findAddressesByStation(int station);
+
+    int findStationByAddress(String address);
 }

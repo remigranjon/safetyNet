@@ -1,6 +1,7 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.response.ChildrenWithFamilyResponse;
+import com.safetynet.alerts.model.response.InhabitantsWithFireStationResponse;
 import com.safetynet.alerts.service.PersonService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,5 +25,10 @@ public class URLsController {
     @GetMapping("/phoneAlert")
     public Set<String> getPhoneNumbersByStation(@RequestParam("firestation") int stationNumber) {
         return personService.getPhoneNumbersByStation(stationNumber);
+    }
+
+    @GetMapping("/fire")
+    public InhabitantsWithFireStationResponse getInhabitantsWithFireStation(@RequestParam("address") String address) {
+        return personService.getInhabitantsByAddress(address);
     }
 }

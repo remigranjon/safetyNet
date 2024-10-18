@@ -42,4 +42,5 @@ public class FireStationService {
                 .childrenCount(childrenCount)
                 .build();
     }
+
 }

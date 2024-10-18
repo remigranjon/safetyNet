@@ -1,8 +1,11 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.model.entity.Person;
 import com.safetynet.alerts.model.response.ChildrenWithFamilyResponse;
+import com.safetynet.alerts.model.response.InhabitantsWithFireStationResponse;
 import com.safetynet.alerts.model.response.PersonNamesAndAgeResponse;
+import com.safetynet.alerts.model.response.PersonWithMedicalRecordResponse;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
 import com.safetynet.alerts.repository.interfaces.PersonRepository;
@@ -59,4 +62,24 @@ public class PersonService {
                 .map(Person::getPhone)
                 .collect(Collectors.toSet());
     }
+
+    public InhabitantsWithFireStationResponse getInhabitantsByAddress(String address) {
+        Set<Person> persons = personRepository.findByAddress(address);
+        return InhabitantsWithFireStationResponse.builder()
+                .inhabitants(persons.stream()
+                        .map((Person person) -> {
+                            MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName());
+                            return PersonWithMedicalRecordResponse.builder()
+                                    .firstName(person.getFirstName())
+                                    .lastName(person.getLastName())
+                                    .phone(person.getPhone())
+                                    .age(medicalRecord.getAge())
+                                    .medicalRecord(medicalRecord.toResponse())
+                                    .build();
+                        })
+                        .collect(Collectors.toSet()))
+                .station(fireStationRepository.findStationByAddress(address))
+                .build();
+    }
+
 }

@@ -2,6 +2,7 @@ package com.safetynet.alerts.utility.reader.implementation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.alerts.model.DTO.MedicalRecordDTO;
 import com.safetynet.alerts.model.entity.FireStation;
 import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.model.entity.Person;
@@ -52,8 +53,10 @@ public class JSONReader implements DataReader {
         Set<MedicalRecord> medicalRecords = new HashSet<>();
         JsonNode medicalRecordsNode = rootNode.get(JSONNodes.MEDICALRECORDS.getValue());
         if (medicalRecordsNode != null) {
-            MedicalRecord[] medicalRecordArray = mapper.convertValue(medicalRecordsNode, MedicalRecord[].class);
-            medicalRecords.addAll(Arrays.asList(medicalRecordArray));
+            MedicalRecordDTO[] medicalRecordArray = mapper.convertValue(medicalRecordsNode, MedicalRecordDTO[].class);
+            Arrays.stream(medicalRecordArray).forEach(medicalRecordDTO -> {
+                medicalRecords.add(medicalRecordDTO.toEntity());
+            });
         }
         return medicalRecords;
     }
