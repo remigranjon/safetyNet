@@ -1,4 +1,4 @@
-package com.safetynet.alerts.utility.converter;
+package com.safetynet.alerts.utility;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,9 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateConverter {
+public class DateUtils {
 
-    private static final Logger logger = LogManager.getLogger(DateConverter.class);
+    private static final Logger logger = LogManager.getLogger(DateUtils.class);
 
     public static Date convertStringToDate(String dateString, String format) {
         SimpleDateFormat formatter = new SimpleDateFormat(format);
@@ -20,4 +20,5 @@ public class DateConverter {
             return null;
         }
     }
+
 }

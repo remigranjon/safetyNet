@@ -1,5 +1,6 @@
 package com.safetynet.alerts.model.entity;
 
+import com.safetynet.alerts.model.response.PersonNamesAndAgeResponse;
 import com.safetynet.alerts.model.response.PersonResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,13 @@ public class Person {
                 .lastName(lastName)
                 .address(address)
                 .phone(phone)
+                .build();
+    }
+
+    public Object toPersonNamesAndAgeResponse() {
+        return PersonNamesAndAgeResponse.builder()
+                .firstName(firstName)
+                .lastName(lastName)
                 .build();
     }
 }

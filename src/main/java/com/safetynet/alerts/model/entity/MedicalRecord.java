@@ -1,14 +1,13 @@
 package com.safetynet.alerts.model.entity;
 
 
-import com.safetynet.alerts.utility.converter.DateConverter;
+import com.safetynet.alerts.utility.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -23,9 +22,15 @@ public class MedicalRecord {
     private Set<String> allergies;
 
     public boolean isAdult() {
+        return getAge() > 18;
+    }
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        return DateConverter.convertStringToDate(birthdate, "dd/MM/yyyy").before(DateConverter.convertStringToDate(LocalDate.now().minusYears(18).toString(), "yyyy-MM-dd"));
+    public long getAge() {
+        if (birthdate == null) {
+            return 0;
+        }
+        Date currentDate = new Date();
+        long diff = currentDate.getTime() - DateUtils.convertStringToDate(birthdate, "dd/MM/yyyy").getTime();
+        return (diff / (1000L * 60 * 60 * 24 * 365));
     }
 }

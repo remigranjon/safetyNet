@@ -3,7 +3,7 @@ package com.safetynet.alerts.repository.implementation;
 import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
 import com.safetynet.alerts.utility.reader.implementation.JSONReader;
-import com.safetynet.alerts.utility.reader.interfaces.interfaces.DataReader;
+import com.safetynet.alerts.utility.reader.interfaces.DataReader;
 
 import java.util.Set;
 

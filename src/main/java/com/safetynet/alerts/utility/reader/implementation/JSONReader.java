@@ -6,7 +6,7 @@ import com.safetynet.alerts.model.entity.FireStation;
 import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.model.entity.Person;
 import com.safetynet.alerts.utility.reader.JSONNodes;
-import com.safetynet.alerts.utility.reader.interfaces.interfaces.DataReader;
+import com.safetynet.alerts.utility.reader.interfaces.DataReader;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.safetynet.alerts.utility.reader.interfaces.interfaces;
+package com.safetynet.alerts.utility.reader.interfaces;
 
 import com.safetynet.alerts.model.entity.FireStation;
 import com.safetynet.alerts.model.entity.MedicalRecord;
