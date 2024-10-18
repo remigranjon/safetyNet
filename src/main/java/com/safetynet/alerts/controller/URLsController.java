@@ -43,4 +43,9 @@ public class URLsController {
     public Set<PersonDetailResponse> getPersonsInfo(@RequestParam("lastName") String lastName) {
         return personService.getPersonsInfoByLastName(lastName);
     }
+
+    @GetMapping("/communityEmail")
+    public Set<String> getEmailsByCity(@RequestParam("city") String city) {
+        return personService.getEmailsByCity(city);
+    }
 }

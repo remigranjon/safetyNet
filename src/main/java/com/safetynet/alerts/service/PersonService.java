@@ -120,4 +120,11 @@ public class PersonService {
                 .collect(Collectors.toSet());
     }
 
+    public Set<String> getEmailsByCity(String city) {
+        Set<Person> persons = personRepository.findByCity(city);
+        return persons.stream()
+                .map(Person::getEmail)
+                .collect(Collectors.toSet());
+    }
+
 }
