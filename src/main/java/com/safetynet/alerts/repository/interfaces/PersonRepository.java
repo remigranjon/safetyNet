@@ -1,0 +1,13 @@
+package com.safetynet.alerts.repository.interfaces;
+
+import com.safetynet.alerts.model.entity.Person;
+import org.springframework.stereotype.Repository;
+
+import java.util.Set;
+
+@Repository
+public interface PersonRepository {
+
+    Set<Person> findByAddress(String address);
+
+}
