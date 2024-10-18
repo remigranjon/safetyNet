@@ -24,4 +24,11 @@ public class PersonRepositoryInMemory implements PersonRepository {
                 .filter(person -> person.getAddress().equals(address))
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public Set<Person> findByLastName(String lastName) {
+        return persons.stream()
+                .filter(person -> person.getLastName().equals(lastName))
+                .collect(Collectors.toSet());
+    }
 }

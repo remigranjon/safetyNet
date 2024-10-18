@@ -3,6 +3,7 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.model.response.ChildrenWithFamilyResponse;
 import com.safetynet.alerts.model.response.InhabitantsResponse;
 import com.safetynet.alerts.model.response.InhabitantsWithFireStationResponse;
+import com.safetynet.alerts.model.response.PersonDetailResponse;
 import com.safetynet.alerts.service.PersonService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,5 +37,10 @@ public class URLsController {
     @GetMapping("/flood")
     public Set<InhabitantsResponse> getInhabitantsByStations(@RequestParam("stations") Set<Integer> stations) {
         return personService.getInhabitantsByStations(stations);
+    }
+
+    @GetMapping("/personInfo")
+    public Set<PersonDetailResponse> getPersonsInfo(@RequestParam("lastName") String lastName) {
+        return personService.getPersonsInfoByLastName(lastName);
     }
 }

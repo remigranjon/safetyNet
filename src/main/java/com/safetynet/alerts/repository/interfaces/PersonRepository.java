@@ -10,4 +10,5 @@ public interface PersonRepository {
 
     Set<Person> findByAddress(String address);
 
+    Set<Person> findByLastName(String lastName);
 }

@@ -103,4 +103,21 @@ public class PersonService {
         return responses;
     }
 
+    public Set<PersonDetailResponse> getPersonsInfoByLastName(String lastName) {
+        Set<Person> persons = personRepository.findByLastName(lastName);
+        return persons.stream()
+                .map(person -> {
+                    MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName());
+                    return PersonDetailResponse.builder()
+                            .firstName(person.getFirstName())
+                            .lastName(person.getLastName())
+                            .address(person.getAddress())
+                            .age(medicalRecord.getAge())
+                            .email(person.getEmail())
+                            .medicalRecord(medicalRecord.toResponse())
+                            .build();
+                })
+                .collect(Collectors.toSet());
+    }
+
 }
