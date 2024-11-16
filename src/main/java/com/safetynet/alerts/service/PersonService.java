@@ -168,6 +168,9 @@ public class PersonService {
     }
 
     public boolean deletePerson(PersonMinimalRequest personRequest) {
+        if (personRequest == null || personRequest.getFirstName() == null || personRequest.getLastName() == null) {
+            return false;
+        }
         Person person = personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName());
         if (person == null) {
             return false;

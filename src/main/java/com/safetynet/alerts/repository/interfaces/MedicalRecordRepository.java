@@ -6,4 +6,8 @@ import org.springframework.stereotype.Repository;
 public interface MedicalRecordRepository {
 
     MedicalRecord findByFirstNameAndLastName(String firstName, String lastName);
+
+    MedicalRecord save(MedicalRecord medicalRecord);
+
+    boolean delete(MedicalRecord medicalRecord);
 }

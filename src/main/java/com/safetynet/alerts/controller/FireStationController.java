@@ -4,6 +4,8 @@ import com.safetynet.alerts.model.request.FireStationRequest;
 import com.safetynet.alerts.model.response.FireStationResponse;
 import com.safetynet.alerts.model.response.PersonsWithCountResponse;
 import com.safetynet.alerts.service.FireStationService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,17 +22,32 @@ public class FireStationController {
     }
 
     @PostMapping
-    public FireStationResponse saveFireStation(@RequestBody FireStationRequest fireStationRequest) {
-        return fireStationService.saveFireStation(fireStationRequest);
+    public ResponseEntity<FireStationResponse> saveFireStation(@RequestBody FireStationRequest fireStationRequest) {
+        FireStationResponse fireStationResponse = fireStationService.saveFireStation(fireStationRequest);
+        if (fireStationResponse != null) {
+            return new ResponseEntity<>(fireStationResponse, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping
-    public FireStationResponse updateFireStation(@RequestBody FireStationRequest fireStationRequest) {
-        return fireStationService.updateFireStation(fireStationRequest);
+    public ResponseEntity<FireStationResponse> updateFireStation(@RequestBody FireStationRequest fireStationRequest) {
+        FireStationResponse fireStationResponse = fireStationService.updateFireStation(fireStationRequest);
+        if (fireStationResponse != null) {
+            return new ResponseEntity<>(fireStationResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping
-    public boolean deleteFireStation(@RequestBody FireStationRequest fireStationRequest) {
-        return fireStationService.deleteFireStation(fireStationRequest);
+    public ResponseEntity<Boolean> deleteFireStation(@RequestBody FireStationRequest fireStationRequest) {
+        boolean isDeleted = fireStationService.deleteFireStation(fireStationRequest);
+        if (isDeleted) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
     }
 }

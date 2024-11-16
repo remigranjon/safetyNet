@@ -65,6 +65,7 @@ public class FireStationService {
         if (fireStation == null) {
             return null;
         }
+        fireStationRepository.delete(fireStation);
         fireStation.setStation(fireStationRequest.getStation());
         FireStation fireStationUpdated = fireStationRepository.save(fireStation);
         if (fireStationUpdated == null) {

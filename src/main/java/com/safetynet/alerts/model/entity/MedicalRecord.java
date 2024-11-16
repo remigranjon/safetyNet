@@ -1,6 +1,7 @@
 package com.safetynet.alerts.model.entity;
 
 
+import com.safetynet.alerts.model.response.FullMedicalRecordResponse;
 import com.safetynet.alerts.model.response.MedicalRecordResponse;
 import com.safetynet.alerts.utility.DateUtils;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,6 @@ public class MedicalRecord {
     private Set<Medication> medications;
     private Set<String> allergies;
 
-
     public boolean isAdult() {
         return getAge() > 18;
     }
@@ -39,6 +39,16 @@ public class MedicalRecord {
 
     public MedicalRecordResponse toResponse() {
         return MedicalRecordResponse.builder()
+                .medications(medications.stream().map(Medication::toResponse).collect(Collectors.toSet()))
+                .allergies(allergies)
+                .build();
+    }
+
+    public FullMedicalRecordResponse toFullResponse() {
+        return FullMedicalRecordResponse.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .birthdate(birthdate)
                 .medications(medications.stream().map(Medication::toResponse).collect(Collectors.toSet()))
                 .allergies(allergies)
                 .build();
