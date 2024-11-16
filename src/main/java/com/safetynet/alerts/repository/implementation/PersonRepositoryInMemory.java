@@ -38,4 +38,29 @@ public class PersonRepositoryInMemory implements PersonRepository {
                 .filter(person -> person.getCity().equals(city))
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public Person save(Person person) {
+        boolean isAdded = persons.add(person);
+        if (isAdded) {
+            return Person.builder().firstName(person.getFirstName()).lastName(person.getLastName())
+                    .address(person.getAddress()).city(person.getCity()).zip(person.getZip()).phone(person.getPhone())
+                    .email(person.getEmail()).build();
+        }
+        else return null;
+    }
+
+    @Override
+    public boolean delete(Person person) {
+        return persons.remove(person);
+    }
+
+    @Override
+    public Person findByFirstNameAndLastName(String firstName, String lastName) {
+        return persons.stream()
+                .filter(person -> person.getFirstName().equals(firstName) && person.getLastName().equals(lastName))
+                .findFirst()
+                .orElse(null);
+    }
+
 }

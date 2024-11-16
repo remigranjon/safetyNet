@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class PersonsWithCountResponse {
-    Set<PersonResponse> persons;
+    Set<PersonMinimalResponse> persons;
     long childrenCount;
     long adultCount;
 }

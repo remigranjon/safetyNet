@@ -2,6 +2,8 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.model.entity.Person;
+import com.safetynet.alerts.model.request.PersonMinimalRequest;
+import com.safetynet.alerts.model.request.PersonRequest;
 import com.safetynet.alerts.model.response.*;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
@@ -126,5 +128,52 @@ public class PersonService {
                 .map(Person::getEmail)
                 .collect(Collectors.toSet());
     }
+
+    public PersonResponse savePerson(PersonRequest personRequest) {
+        if (personRequest == null || !personRequest.isValid()) {
+            return null;
+        }
+        Person person = personRequest.toPerson();
+        Person personSaved = personRepository.save(person);
+        return personSaved != null ? personSaved.toPersonResponse() : null;
+    }
+
+
+    public PersonResponse updatePerson(PersonRequest personRequest) {
+        if (personRequest == null) {
+            return null;
+        }
+        Person person = personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName());
+        if (person == null) {
+            return null;
+        }
+        personRepository.delete(person);
+        if (personRequest.getAddress() != null && !personRequest.getAddress().isEmpty()) {
+            person.setAddress(personRequest.getAddress());
+        }
+        if (personRequest.getCity() != null && !personRequest.getCity().isEmpty()) {
+            person.setCity(personRequest.getCity());
+        }
+        if (personRequest.getZip() != null && !personRequest.getZip().isEmpty()) {
+            person.setZip(personRequest.getZip());
+        }
+        if (personRequest.getPhone() != null && !personRequest.getPhone().isEmpty()) {
+            person.setPhone(personRequest.getPhone());
+        }
+        if (personRequest.getEmail() != null && !personRequest.getEmail().isEmpty()) {
+            person.setEmail(personRequest.getEmail());
+        }
+        Person personSaved = personRepository.save(person);
+        return personSaved != null ? personSaved.toPersonResponse() : null;
+    }
+
+    public boolean deletePerson(PersonMinimalRequest personRequest) {
+        Person person = personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName());
+        if (person == null) {
+            return false;
+        }
+        return personRepository.delete(person);
+    }
+
 
 }

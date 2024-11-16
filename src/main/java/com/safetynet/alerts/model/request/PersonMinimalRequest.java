@@ -1,4 +1,4 @@
-package com.safetynet.alerts.model.response;
+package com.safetynet.alerts.model.request;
 
 
 import lombok.AllArgsConstructor;
@@ -10,12 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PersonResponse {
+public class PersonMinimalRequest {
     private String firstName;
     private String lastName;
-    private String address;
-    private String city;
-    private String zip;
-    private String phone;
-    private String email;
 }

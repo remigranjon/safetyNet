@@ -1,6 +1,6 @@
 package com.safetynet.alerts.model.entity;
 
-import com.safetynet.alerts.model.response.PersonNamesAndAgeResponse;
+import com.safetynet.alerts.model.response.PersonMinimalResponse;
 import com.safetynet.alerts.model.response.PersonResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +21,8 @@ public class Person {
     private String phone;
     private String email;
 
-    public PersonResponse toPersonResponse() {
-        return PersonResponse.builder()
+    public PersonMinimalResponse toPersonMinimalResponse() {
+        return PersonMinimalResponse.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .address(address)
@@ -30,10 +30,15 @@ public class Person {
                 .build();
     }
 
-    public Object toPersonNamesAndAgeResponse() {
-        return PersonNamesAndAgeResponse.builder()
+    public PersonResponse toPersonResponse() {
+        return PersonResponse.builder()
                 .firstName(firstName)
                 .lastName(lastName)
+                .address(address)
+                .city(city)
+                .zip(zip)
+                .phone(phone)
+                .email(email)
                 .build();
     }
 }

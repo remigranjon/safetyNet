@@ -1,7 +1,7 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.entity.Person;
-import com.safetynet.alerts.model.response.PersonResponse;
+import com.safetynet.alerts.model.response.PersonMinimalResponse;
 import com.safetynet.alerts.model.response.PersonsWithCountResponse;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
@@ -26,10 +26,10 @@ public class FireStationService {
 
     public PersonsWithCountResponse getPersonsWithCountByStation(int station) {
         Set<String> addresses = fireStationRepository.findAddressesByStation(station);
-        Set<PersonResponse> persons = addresses.stream()
+        Set<PersonMinimalResponse> persons = addresses.stream()
                 .map(personRepository::findByAddress)
                 .flatMap(Set::stream)
-                .map(Person::toPersonResponse)
+                .map(Person::toPersonMinimalResponse)
                 .collect(Collectors.toSet());
         long adultCount = persons.stream()
                 .filter(person -> medicalRecordRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()).isAdult())

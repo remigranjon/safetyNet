@@ -17,7 +17,6 @@ public class AppConfig {
         return new PersonRepositoryInMemory();
     }
 
-
     @Bean
     public FireStationRepository fireStationRepositoryInMemory() {
         return new FireStationRepositoryInMemory();
