@@ -33,4 +33,34 @@ public class FireStationRepositoryInMemory implements FireStationRepository {
                 .findFirst()
                 .orElse(0);
     }
+
+    @Override
+    public FireStation save(FireStation fireStation) {
+        boolean isAdded = fireStations.add(fireStation);
+        if (isAdded) {
+            return FireStation.builder().address(fireStation.getAddress()).station(fireStation.getStation()).build();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean delete(FireStation fireStation) {
+        return fireStations.remove(fireStation);
+    }
+
+    @Override
+    public FireStation findByAddress(String address) {
+        return fireStations.stream()
+                .filter(fireStation -> fireStation.getAddress().equals(address))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public Set<FireStation> findByStation(int station) {
+        return fireStations.stream()
+                .filter(fireStation -> fireStation.getStation() == station)
+                .collect(Collectors.toSet());
+    }
 }

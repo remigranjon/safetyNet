@@ -1,7 +1,7 @@
-package com.safetynet.alerts.model.entity;
+package com.safetynet.alerts.model.request;
 
 
-import com.safetynet.alerts.model.response.FireStationResponse;
+import com.safetynet.alerts.model.entity.FireStation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FireStation {
+public class FireStationRequest {
     private String address;
-    private int station;
+    private Integer station;
 
-    public FireStationResponse toFireStationResponse() {
-        return FireStationResponse.builder()
+    public FireStation toFireStation() {
+        return FireStation.builder()
                 .address(address)
                 .station(station)
                 .build();

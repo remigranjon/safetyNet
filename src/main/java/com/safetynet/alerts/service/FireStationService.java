@@ -1,6 +1,9 @@
 package com.safetynet.alerts.service;
 
+import com.safetynet.alerts.model.entity.FireStation;
 import com.safetynet.alerts.model.entity.Person;
+import com.safetynet.alerts.model.request.FireStationRequest;
+import com.safetynet.alerts.model.response.FireStationResponse;
 import com.safetynet.alerts.model.response.PersonMinimalResponse;
 import com.safetynet.alerts.model.response.PersonsWithCountResponse;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
@@ -43,4 +46,49 @@ public class FireStationService {
                 .build();
     }
 
+    public FireStationResponse saveFireStation(FireStationRequest fireStationRequest) {
+        if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == 0) {
+            return null;
+        }
+        FireStation fireStationSaved = fireStationRepository.save(fireStationRequest.toFireStation());
+        if (fireStationSaved == null) {
+            return null;
+        }
+        return fireStationSaved.toFireStationResponse();
+    }
+
+    public FireStationResponse updateFireStation(FireStationRequest fireStationRequest) {
+        if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == null) {
+            return null;
+        }
+        FireStation fireStation = fireStationRepository.findByAddress(fireStationRequest.getAddress());
+        if (fireStation == null) {
+            return null;
+        }
+        fireStation.setStation(fireStationRequest.getStation());
+        FireStation fireStationUpdated = fireStationRepository.save(fireStation);
+        if (fireStationUpdated == null) {
+            return null;
+        }
+        return fireStationUpdated.toFireStationResponse();
+    }
+
+    public boolean deleteFireStation( FireStationRequest fireStationRequest) {
+        if (fireStationRequest.getAddress() == null && fireStationRequest.getStation() == null) {
+            return false;
+        }
+        if (fireStationRequest.getAddress() != null) {
+            FireStation fireStation = fireStationRepository.findByAddress(fireStationRequest.getAddress());
+            if (fireStation == null) {
+                return false;
+            }
+            return fireStationRepository.delete(fireStation);
+        }
+        Set<FireStation> fireStations = fireStationRepository.findByStation(fireStationRequest.getStation());
+        if (fireStations.isEmpty()) {
+            return false;
+        }
+        fireStations.forEach(fireStationRepository::delete);
+        return true;
+    }
 }
