@@ -6,6 +6,8 @@ import com.safetynet.alerts.model.request.MedicationRequest;
 import com.safetynet.alerts.model.request.PersonMinimalRequest;
 import com.safetynet.alerts.model.response.FullMedicalRecordResponse;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class MedicalRecordService {
     private final MedicalRecordRepository medicalRecordRepository;
+    private final Logger logger = LogManager.getLogger(MedicalRecordService.class);
 
     public MedicalRecordService(MedicalRecordRepository medicalRecordRepository) {
         this.medicalRecordRepository = medicalRecordRepository;
@@ -20,10 +23,12 @@ public class MedicalRecordService {
 
     public FullMedicalRecordResponse saveMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
         if (medicalRecordRequest == null || !medicalRecordRequest.isValid()) {
+            logger.error("Error while creating medical record : request not valid");
            return null;
         }
         MedicalRecord medicalRecordSaved = medicalRecordRepository.save(medicalRecordRequest.toEntity());
         if (medicalRecordSaved == null) {
+            logger.error("Error while creating medical record : saving unsuccessful");
             return null;
         }
         return medicalRecordSaved.toFullResponse();
@@ -31,10 +36,12 @@ public class MedicalRecordService {
 
     public FullMedicalRecordResponse updateMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
         if (medicalRecordRequest.getFirstName() == null || medicalRecordRequest.getLastName() == null) {
+            logger.error("Error while updating medical record : request not valid");
             return null;
         }
         MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(medicalRecordRequest.getFirstName(), medicalRecordRequest.getLastName());
         if (medicalRecord == null) {
+            logger.error("Error while updating medical record : medical record not found");
             return null;
         }
         medicalRecordRepository.delete(medicalRecord);
@@ -51,6 +58,7 @@ public class MedicalRecordService {
         }
         MedicalRecord medicalRecordUpdated = medicalRecordRepository.save(medicalRecord);
         if (medicalRecordUpdated == null) {
+            logger.error("Error while updating medical record : saving unsuccessful");
             return null;
         }
         return medicalRecordUpdated.toFullResponse();
@@ -58,10 +66,12 @@ public class MedicalRecordService {
 
     public boolean deleteMedicalRecord(PersonMinimalRequest personMinimalRequest) {
         if (personMinimalRequest == null || personMinimalRequest.getFirstName() == null || personMinimalRequest.getLastName() == null) {
+            logger.error("Error while deleting medical record : request not valid");
             return false;
         }
         MedicalRecord medicalRecord = medicalRecordRepository.findByFirstNameAndLastName(personMinimalRequest.getFirstName(), personMinimalRequest.getLastName());
         if (medicalRecord == null) {
+            logger.error("Error while deleting medical record : medical record not found");
             return false;
         }
         return medicalRecordRepository.delete(medicalRecord);

@@ -8,6 +8,8 @@ import com.safetynet.alerts.model.response.*;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
 import com.safetynet.alerts.repository.interfaces.PersonRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -20,6 +22,7 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final FireStationRepository fireStationRepository;
     private final MedicalRecordRepository medicalRecordRepository;
+    private final Logger logger = LogManager.getLogger(PersonService.class);
 
     public PersonService(PersonRepository personRepository, FireStationRepository fireStationRepository,
                          MedicalRecordRepository medicalRecordRepository) {
@@ -131,6 +134,7 @@ public class PersonService {
 
     public PersonResponse savePerson(PersonRequest personRequest) {
         if (personRequest == null || !personRequest.isValid()) {
+            logger.error("Error while creating person : request not valid");
             return null;
         }
         Person person = personRequest.toPerson();
@@ -141,10 +145,12 @@ public class PersonService {
 
     public PersonResponse updatePerson(PersonRequest personRequest) {
         if (personRequest == null) {
+            logger.error("Error while updating person : request not valid");
             return null;
         }
         Person person = personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName());
         if (person == null) {
+            logger.error("Error while updating person : person not found");
             return null;
         }
         personRepository.delete(person);
@@ -169,10 +175,12 @@ public class PersonService {
 
     public boolean deletePerson(PersonMinimalRequest personRequest) {
         if (personRequest == null || personRequest.getFirstName() == null || personRequest.getLastName() == null) {
+            logger.error("Error while deleting person : request not valid");
             return false;
         }
         Person person = personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName());
         if (person == null) {
+            logger.error("Error while deleting person : person not found");
             return false;
         }
         return personRepository.delete(person);

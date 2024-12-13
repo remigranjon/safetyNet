@@ -9,6 +9,8 @@ import com.safetynet.alerts.model.response.PersonsWithCountResponse;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
 import com.safetynet.alerts.repository.interfaces.MedicalRecordRepository;
 import com.safetynet.alerts.repository.interfaces.PersonRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -19,6 +21,7 @@ public class FireStationService {
     private final FireStationRepository fireStationRepository;
     private final PersonRepository personRepository;
     private final MedicalRecordRepository medicalRecordRepository;
+    private final Logger logger = LogManager.getLogger(FireStationService.class);
 
     public FireStationService(FireStationRepository fireStationRepository, PersonRepository personRepository,
                               MedicalRecordRepository medicalRecordRepository) {
@@ -48,10 +51,12 @@ public class FireStationService {
 
     public FireStationResponse saveFireStation(FireStationRequest fireStationRequest) {
         if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == 0) {
+            logger.error("Error while creating fire station : request not valid");
             return null;
         }
         FireStation fireStationSaved = fireStationRepository.save(fireStationRequest.toFireStation());
         if (fireStationSaved == null) {
+            logger.error("Error while creating fire station : saving unsuccessful");
             return null;
         }
         return fireStationSaved.toFireStationResponse();
@@ -59,16 +64,19 @@ public class FireStationService {
 
     public FireStationResponse updateFireStation(FireStationRequest fireStationRequest) {
         if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == null) {
+            logger.error("Error while updating fire station : request not valid");
             return null;
         }
         FireStation fireStation = fireStationRepository.findByAddress(fireStationRequest.getAddress());
         if (fireStation == null) {
+            logger.error("Error while updating fire station : fire station not found");
             return null;
         }
         fireStationRepository.delete(fireStation);
         fireStation.setStation(fireStationRequest.getStation());
         FireStation fireStationUpdated = fireStationRepository.save(fireStation);
         if (fireStationUpdated == null) {
+            logger.error("Error while updating fire station : saving unsuccessful");
             return null;
         }
         return fireStationUpdated.toFireStationResponse();
@@ -76,17 +84,20 @@ public class FireStationService {
 
     public boolean deleteFireStation( FireStationRequest fireStationRequest) {
         if (fireStationRequest.getAddress() == null && fireStationRequest.getStation() == null) {
+            logger.error("Error while deleting fire station : request not valid");
             return false;
         }
         if (fireStationRequest.getAddress() != null) {
             FireStation fireStation = fireStationRepository.findByAddress(fireStationRequest.getAddress());
             if (fireStation == null) {
+                logger.error("Error while deleting fire station : fire station not found");
                 return false;
             }
             return fireStationRepository.delete(fireStation);
         }
         Set<FireStation> fireStations = fireStationRepository.findByStation(fireStationRequest.getStation());
         if (fireStations.isEmpty()) {
+            logger.error("Error while deleting fire station : fire station not found");
             return false;
         }
         fireStations.forEach(fireStationRepository::delete);
