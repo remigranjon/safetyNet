@@ -12,19 +12,21 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfig {
+    private static final String DATAFILE_PATH = "/data/data.json";
+
     @Bean
     public PersonRepository personRepositoryInMemory() {
-        return new PersonRepositoryInMemory();
+        return new PersonRepositoryInMemory(DATAFILE_PATH);
     }
 
     @Bean
     public FireStationRepository fireStationRepositoryInMemory() {
-        return new FireStationRepositoryInMemory();
+        return new FireStationRepositoryInMemory(DATAFILE_PATH);
     }
 
     @Bean
     public MedicalRecordRepository medicalRecordRepositoryInMemory() {
-        return new MedicalRecordRepositoryInMemory();
+        return new MedicalRecordRepositoryInMemory(DATAFILE_PATH);
     }
 
 }

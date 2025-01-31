@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class FireStationRepositoryInMemory implements FireStationRepository {
 
-    private Set<FireStation> fireStations;
+    private final Set<FireStation> fireStations;
 
-    public FireStationRepositoryInMemory() {
-        DataReader dataReader = new JSONReader("/data/data.json");
+    public FireStationRepositoryInMemory(String dataFilePath) {
+        DataReader dataReader = new JSONReader(dataFilePath);
         fireStations = dataReader.readFireStations();
     }
 

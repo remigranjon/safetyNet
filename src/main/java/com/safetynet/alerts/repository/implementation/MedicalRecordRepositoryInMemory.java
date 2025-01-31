@@ -8,12 +8,11 @@ import com.safetynet.alerts.utility.reader.interfaces.DataReader;
 import java.util.Set;
 
 public class MedicalRecordRepositoryInMemory implements MedicalRecordRepository {
-    Set<MedicalRecord> medicalRecords;
+    private final Set<MedicalRecord> medicalRecords;
 
-    public MedicalRecordRepositoryInMemory() {
-        DataReader dataReader = new JSONReader("/data/data.json");
+    public MedicalRecordRepositoryInMemory(String dataFilePath) {
+        DataReader dataReader = new JSONReader(dataFilePath);
         medicalRecords = dataReader.readMedicalRecords();
-
     }
 
     @Override

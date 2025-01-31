@@ -1,14 +1,13 @@
-package com.safetynet.alerts;
+package com.safetynet.alerts.controller;
+
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AlertsApplicationTests {
-
-	@Test
-	void contextLoads() {
+class FireStationControllerTests {
+    @Test
+    void contextLoads() {
 //		Unimplemented
-	}
-
+    }
 }

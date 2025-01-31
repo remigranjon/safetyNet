@@ -50,7 +50,7 @@ public class FireStationService {
     }
 
     public FireStationResponse saveFireStation(FireStationRequest fireStationRequest) {
-        if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == 0) {
+        if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == null || fireStationRequest.getStation() == 0 ) {
             logger.error("Error while creating fire station : request not valid");
             return null;
         }
@@ -63,7 +63,7 @@ public class FireStationService {
     }
 
     public FireStationResponse updateFireStation(FireStationRequest fireStationRequest) {
-        if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == null) {
+        if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == null || fireStationRequest.getStation() == 0) {
             logger.error("Error while updating fire station : request not valid");
             return null;
         }
@@ -75,15 +75,11 @@ public class FireStationService {
         fireStationRepository.delete(fireStation);
         fireStation.setStation(fireStationRequest.getStation());
         FireStation fireStationUpdated = fireStationRepository.save(fireStation);
-        if (fireStationUpdated == null) {
-            logger.error("Error while updating fire station : saving unsuccessful");
-            return null;
-        }
         return fireStationUpdated.toFireStationResponse();
     }
 
     public boolean deleteFireStation( FireStationRequest fireStationRequest) {
-        if (fireStationRequest.getAddress() == null && fireStationRequest.getStation() == null) {
+        if (fireStationRequest.getAddress() == null && (fireStationRequest.getStation() == null || fireStationRequest.getStation() == 0)) {
             logger.error("Error while deleting fire station : request not valid");
             return false;
         }

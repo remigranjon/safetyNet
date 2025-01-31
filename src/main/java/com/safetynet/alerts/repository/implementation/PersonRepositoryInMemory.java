@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class PersonRepositoryInMemory implements PersonRepository {
 
-    private Set<Person> persons;
+    private final Set<Person> persons;
 
-    public PersonRepositoryInMemory() {
-        DataReader dataReader = new JSONReader("/data/data.json");
+    public PersonRepositoryInMemory(String dataFilePath) {
+        DataReader dataReader = new JSONReader(dataFilePath);
         persons = dataReader.readPersons();
     }
 
