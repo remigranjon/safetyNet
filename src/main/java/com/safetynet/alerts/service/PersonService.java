@@ -2,6 +2,7 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.model.entity.Person;
+import com.safetynet.alerts.model.request.NewPersonRequest;
 import com.safetynet.alerts.model.request.PersonMinimalRequest;
 import com.safetynet.alerts.model.request.PersonRequest;
 import com.safetynet.alerts.model.response.*;
@@ -139,19 +140,23 @@ public class PersonService {
                 .collect(Collectors.toSet());
     }
 
-    public PersonResponse savePerson(PersonRequest personRequest) {
+    public PersonResponse savePerson(NewPersonRequest personRequest) {
         if (personRequest == null || !personRequest.isValid()) {
             logger.error("Error while creating person : request not valid");
             return null;
         }
-        Person person = personRequest.toPerson();
-        Person personSaved = personRepository.save(person);
-        return personSaved != null ? personSaved.toPersonResponse() : null;
+        if (personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName()) != null) {
+            logger.error("Error while creating person : person already exists");
+            return null;
+        }
+        Person person = personRequest.getPerson();
+        medicalRecordRepository.save(personRequest.getMedicalRecord());
+       return personRepository.save(person).toPersonResponse();
     }
 
 
     public PersonResponse updatePerson(PersonRequest personRequest) {
-        if (personRequest == null) {
+        if (personRequest == null || personRequest.getFirstName() == null || personRequest.getLastName() == null) {
             logger.error("Error while updating person : request not valid");
             return null;
         }
@@ -176,8 +181,7 @@ public class PersonService {
         if (personRequest.getEmail() != null && !personRequest.getEmail().isEmpty()) {
             person.setEmail(personRequest.getEmail());
         }
-        Person personSaved = personRepository.save(person);
-        return personSaved != null ? personSaved.toPersonResponse() : null;
+        return  personRepository.save(person).toPersonResponse();
     }
 
     public boolean deletePerson(PersonMinimalRequest personRequest) {

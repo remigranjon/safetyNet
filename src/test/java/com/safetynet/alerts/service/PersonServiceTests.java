@@ -4,6 +4,9 @@ import com.safetynet.alerts.model.entity.FireStation;
 import com.safetynet.alerts.model.entity.MedicalRecord;
 import com.safetynet.alerts.model.entity.Medication;
 import com.safetynet.alerts.model.entity.Person;
+import com.safetynet.alerts.model.request.NewPersonRequest;
+import com.safetynet.alerts.model.request.PersonMinimalRequest;
+import com.safetynet.alerts.model.request.PersonRequest;
 import com.safetynet.alerts.model.response.*;
 import com.safetynet.alerts.repository.implementation.FireStationRepositoryInMemory;
 import com.safetynet.alerts.repository.implementation.MedicalRecordRepositoryInMemory;
@@ -401,6 +404,442 @@ public class PersonServiceTests {
             personRepository.save(person3);
             Set<String> expectedEmails = Set.of(person1.getEmail(), person2.getEmail());
             assertEquals(expectedEmails, personService.getEmailsByCity(city));
+        }
+    }
+
+    @Nested
+    class SavePersonTests {
+        @Test
+        void testSavePerson() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            NewPersonRequest request = NewPersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address(person.getAddress())
+                    .city(person.getCity())
+                    .zip(person.getZip())
+                    .phone(person.getPhone())
+                    .email(person.getEmail())
+                    .birthdate("01/01/2000")
+                    .build();
+            personService.savePerson(request);
+            assertEquals(person, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testSavePersonWithNull() {
+            assertNull(personService.savePerson(null));
+        }
+
+        @Test
+        void testSavePersonWithInvalidRequest() {
+            assertNull(personService.savePerson(NewPersonRequest.builder().build()));
+        }
+
+        @Test
+        void testSavePersonAlreadyExists() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            NewPersonRequest request = NewPersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address(person.getAddress())
+                    .city(person.getCity())
+                    .zip(person.getZip())
+                    .phone(person.getPhone())
+                    .email(person.getEmail())
+                    .birthdate("01/01/2000")
+                    .build();
+            personRepository.save(person);
+            assertNull(personService.savePerson(request));
+        }
+    }
+
+    @Nested
+    class UpdatePersonTests {
+        @Test
+        void testUpdatePerson() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("email")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("test")
+                    .zip("test")
+                    .phone("test")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            assertEquals(request.toPerson(), personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithNull() {
+            assertNull(personService.updatePerson(null));
+        }
+
+        @Test
+        void testUpdatePersonWithInvalidRequest() {
+            assertNull(personService.updatePerson(PersonRequest.builder().build()));
+        }
+
+        @Test
+        void testUpdatePersonWithoutLastName() {
+            assertNull(personService.updatePerson(PersonRequest.builder().firstName("test").build()));
+        }
+
+        @Test
+        void testUpdatePersonNotFound() {
+            PersonRequest request = PersonRequest.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            assertNull(personService.updatePerson(request));
+        }
+
+        @Test
+        void testUpdatePersonWithEmptyAddress() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("")
+                    .city("test")
+                    .zip("test")
+                    .phone("test")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setAddress(person.getAddress());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithEmptyCity() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("")
+                    .zip("test")
+                    .phone("test")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setCity(person.getCity());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithEmptyZip() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("test")
+                    .zip("")
+                    .phone("test")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setZip(person.getZip());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithEmptyPhone() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("test")
+                    .zip("test")
+                    .phone("")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setPhone(person.getPhone());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithEmptyEmail() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("test")
+                    .zip("test")
+                    .phone("test")
+                    .email("")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setEmail(person.getEmail());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithoutAddress() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address(null)
+                    .city("test")
+                    .zip("test")
+                    .phone("test")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setAddress(person.getAddress());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithoutCity() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city(null)
+                    .zip("test")
+                    .phone("test")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setCity(person.getCity());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithoutZip() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("test")
+                    .zip(null)
+                    .phone("test")
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setZip(person.getZip());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithoutPhone() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("test")
+                    .zip("test")
+                    .phone(null)
+                    .email("test")
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setPhone(person.getPhone());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testUpdatePersonWithoutEmail() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonRequest request = PersonRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .address("test")
+                    .city("test")
+                    .zip("test")
+                    .phone("test")
+                    .email(null)
+                    .build();
+            personService.updatePerson(request);
+            Person expectedResponse = request.toPerson();
+            expectedResponse.setEmail(person.getEmail());
+            assertEquals(expectedResponse, personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+    }
+
+    @Nested
+    class DeletePersonTests {
+        @Test
+        void testDeletePerson() {
+            Person person = Person.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .address("1509 Culver St")
+                    .city("Culver")
+                    .zip("12345")
+                    .phone("123-456-7890")
+                    .email("test")
+                    .build();
+            personRepository.save(person);
+            PersonMinimalRequest request = PersonMinimalRequest.builder()
+                    .firstName(person.getFirstName())
+                    .lastName(person.getLastName())
+                    .build();
+            assertTrue(personService.deletePerson(request));
+            assertNull(personRepository.findByFirstNameAndLastName(person.getFirstName(), person.getLastName()));
+        }
+
+        @Test
+        void testDeletePersonNotFound() {
+            assertFalse(personService.deletePerson(PersonMinimalRequest.builder()
+                    .firstName("John")
+                    .lastName("Boyd")
+                    .build()));
+        }
+
+        @Test
+        void testDeletePersonWithNull() {
+            assertFalse(personService.deletePerson(null));
+        }
+
+        @Test
+        void testDeletePersonWithEmptyRequest() {
+            assertFalse(personService.deletePerson(PersonMinimalRequest.builder().build()));
+        }
+
+        @Test
+        void testDeletePersonWithoutLastName() {
+            assertFalse(personService.deletePerson(PersonMinimalRequest.builder().firstName("John").build()));
         }
     }
 

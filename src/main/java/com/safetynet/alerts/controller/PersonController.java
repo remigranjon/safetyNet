@@ -1,6 +1,7 @@
 package com.safetynet.alerts.controller;
 
 
+import com.safetynet.alerts.model.request.NewPersonRequest;
 import com.safetynet.alerts.model.request.PersonMinimalRequest;
 import com.safetynet.alerts.model.request.PersonRequest;
 import com.safetynet.alerts.model.response.PersonResponse;
@@ -23,7 +24,7 @@ public class PersonController {
     public PersonController(PersonService personService) {this.personService = personService;}
 
     @PostMapping
-    public ResponseEntity<PersonResponse> savePerson(@RequestBody PersonRequest personRequest) {
+    public ResponseEntity<PersonResponse> savePerson(@RequestBody NewPersonRequest personRequest) {
         logger.info("Trying to save person");
         PersonResponse personResponse = personService.savePerson(personRequest);
         if (personResponse != null) {
