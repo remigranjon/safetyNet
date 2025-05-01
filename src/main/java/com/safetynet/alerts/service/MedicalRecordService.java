@@ -26,16 +26,15 @@ public class MedicalRecordService {
             logger.error("Error while creating medical record : request not valid");
            return null;
         }
-        MedicalRecord medicalRecordSaved = medicalRecordRepository.save(medicalRecordRequest.toEntity());
-        if (medicalRecordSaved == null) {
-            logger.error("Error while creating medical record : saving unsuccessful");
+        if (medicalRecordRepository.findByFirstNameAndLastName(medicalRecordRequest.getFirstName(), medicalRecordRequest.getLastName()) != null) {
+            logger.error("Error while creating medical record : medical record already exists");
             return null;
         }
-        return medicalRecordSaved.toFullResponse();
+        return medicalRecordRepository.save(medicalRecordRequest.toEntity()).toFullResponse();
     }
 
     public FullMedicalRecordResponse updateMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
-        if (medicalRecordRequest.getFirstName() == null || medicalRecordRequest.getLastName() == null) {
+        if (medicalRecordRequest == null || medicalRecordRequest.getFirstName() == null || medicalRecordRequest.getLastName() == null) {
             logger.error("Error while updating medical record : request not valid");
             return null;
         }
@@ -56,12 +55,7 @@ public class MedicalRecordService {
         if (medicalRecordRequest.getAllergies() != null) {
             medicalRecord.setAllergies(medicalRecordRequest.getAllergies());
         }
-        MedicalRecord medicalRecordUpdated = medicalRecordRepository.save(medicalRecord);
-        if (medicalRecordUpdated == null) {
-            logger.error("Error while updating medical record : saving unsuccessful");
-            return null;
-        }
-        return medicalRecordUpdated.toFullResponse();
+        return new FullMedicalRecordResponse(medicalRecordRepository.save(medicalRecord));
     }
 
     public boolean deleteMedicalRecord(PersonMinimalRequest personMinimalRequest) {

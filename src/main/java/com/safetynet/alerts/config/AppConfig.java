@@ -15,17 +15,17 @@ public class AppConfig {
     private static final String DATAFILE_PATH = "/data/data.json";
 
     @Bean
-    public PersonRepository personRepositoryInMemory() {
+    public PersonRepository personRepository() {
         return new PersonRepositoryInMemory(DATAFILE_PATH);
     }
 
     @Bean
-    public FireStationRepository fireStationRepositoryInMemory() {
+    public FireStationRepository fireStationRepository() {
         return new FireStationRepositoryInMemory(DATAFILE_PATH);
     }
 
     @Bean
-    public MedicalRecordRepository medicalRecordRepositoryInMemory() {
+    public MedicalRecordRepository medicalRecordRepository() {
         return new MedicalRecordRepositoryInMemory(DATAFILE_PATH);
     }
 

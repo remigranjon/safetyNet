@@ -25,9 +25,9 @@ public class MedicalRecordRequest {
                 .firstName(firstName)
                 .lastName(lastName)
                 .birthdate(birthdate)
-                .medications(medications.stream()
+                .medications(medications != null ? medications.stream()
                         .map(MedicationRequest::toEntity)
-                        .collect(Collectors.toSet()))
+                        .collect(Collectors.toSet()): Set.of())
                 .allergies(allergies)
                 .build();
     }
