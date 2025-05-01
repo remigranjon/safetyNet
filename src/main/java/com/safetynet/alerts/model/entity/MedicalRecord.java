@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,13 +34,14 @@ public class MedicalRecord {
             return 0;
         }
         Date currentDate = new Date();
-        long diff = currentDate.getTime() - DateUtils.convertStringToDate(birthdate, "dd/MM/yyyy").getTime();
+        long diff = currentDate.getTime() - Objects.requireNonNull(
+                DateUtils.convertStringToDate(birthdate, "dd/MM/yyyy")).getTime();
         return (diff / (1000L * 60 * 60 * 24 * 365));
     }
 
     public MedicalRecordResponse toResponse() {
         return MedicalRecordResponse.builder()
-                .medications(medications.stream().map(Medication::toResponse).collect(Collectors.toSet()))
+                .medications(medications != null ? medications.stream().map(Medication::toResponse).collect(Collectors.toSet()): Set.of())
                 .allergies(allergies)
                 .build();
     }

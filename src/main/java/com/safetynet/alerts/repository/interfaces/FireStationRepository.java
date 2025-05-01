@@ -10,7 +10,7 @@ import java.util.Set;
 public interface FireStationRepository {
     Set<String> findAddressesByStation(int station);
 
-    int findStationByAddress(String address);
+    Integer findStationByAddress(String address);
 
     FireStation save(FireStation fireStation);
 

@@ -32,8 +32,8 @@ public class URLsController {
             logger.info("Children with family by address retrieved");
             return ResponseEntity.ok(childrenWithFamilyResponse);
         } else {
-            logger.warn("Children with family by address not retrieved");
-            return ResponseEntity.badRequest().build();
+            logger.warn("No children found for the given address");
+            return ResponseEntity.ok(null);
         }
     }
 
@@ -41,38 +41,37 @@ public class URLsController {
     public ResponseEntity<Set<String>> getPhoneNumbersByStation(@RequestParam("firestation") int stationNumber) {
         logger.info("Trying to get phone numbers by station");
         Set<String> phoneNumbers = personService.getPhoneNumbersByStation(stationNumber);
-        if (phoneNumbers != null) {
-            logger.info("Phone numbers by station retrieved");
-            return ResponseEntity.ok(phoneNumbers);
-        } else {
-            logger.warn("Phone numbers by station not retrieved");
-            return ResponseEntity.badRequest().build();
-        }
+        logger.info("Phone numbers by station retrieved");
+        return ResponseEntity.ok(phoneNumbers);
+
     }
 
     @GetMapping("/fire")
-    public ResponseEntity<InhabitantsWithFireStationResponse> getInhabitantsWithFireStation(@RequestParam("address") String address) {
+    public ResponseEntity<InhabitantsWithFireStationResponse> getInhabitantsWithFireStation(
+            @RequestParam("address") String address) {
         logger.info("Trying to get inhabitants with fire station by address");
-        InhabitantsWithFireStationResponse inhabitantsWithFireStationResponse = personService.getInhabitantsByAddress(address);
-        if (inhabitantsWithFireStationResponse != null) {
-            logger.info("Inhabitants with fire station by address retrieved");
-            return ResponseEntity.ok(inhabitantsWithFireStationResponse);
-        } else {
-            logger.warn("Inhabitants with fire station by address not retrieved");
-            return ResponseEntity.badRequest().build();
+        InhabitantsWithFireStationResponse inhabitantsWithFireStationResponse =
+                personService.getInhabitantsByAddress(address);
+        if (inhabitantsWithFireStationResponse.getInhabitants().isEmpty()||
+                inhabitantsWithFireStationResponse.getStation()== null) {
+            logger.warn("No inhabitants found for the given address");
+            return ResponseEntity.notFound().build();
         }
-    }
+                logger.info("Inhabitants with fire station by address retrieved");
+                return ResponseEntity.ok(inhabitantsWithFireStationResponse);
+        }
 
     @GetMapping("/flood")
-    public ResponseEntity<Set<InhabitantsResponse>> getInhabitantsByStations(@RequestParam("stations") Set<Integer> stations) {
+    public ResponseEntity<Set<InhabitantsResponse>> getInhabitantsByStations(
+            @RequestParam("stations") Set<Integer> stations) {
         logger.info("Trying to get inhabitants by stations");
         Set<InhabitantsResponse> inhabitantsResponses = personService.getInhabitantsByStations(stations);
         if (inhabitantsResponses != null) {
             logger.info("Inhabitants by stations retrieved");
             return ResponseEntity.ok(inhabitantsResponses);
         } else {
-            logger.warn("Inhabitants by stations not retrieved");
-            return ResponseEntity.badRequest().build();
+            logger.warn("Stations not found");
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -80,12 +79,12 @@ public class URLsController {
     public ResponseEntity<Set<PersonDetailResponse>> getPersonsInfo(@RequestParam("lastName") String lastName) {
         logger.info("Trying to get persons info by last name");
         Set<PersonDetailResponse> personDetailResponses = personService.getPersonsInfoByLastName(lastName);
-        if (personDetailResponses != null) {
+        if (!personDetailResponses.isEmpty()) {
             logger.info("Persons info by last name retrieved");
             return ResponseEntity.ok(personDetailResponses);
         } else {
             logger.warn("Persons info by last name not retrieved");
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -93,12 +92,12 @@ public class URLsController {
     public ResponseEntity<Set<String>> getEmailsByCity(@RequestParam("city") String city) {
         logger.info("Trying to get emails by city");
         Set<String> emails = personService.getEmailsByCity(city);
-        if (emails != null) {
+        if (!emails.isEmpty()) {
             logger.info("Emails by city retrieved");
             return ResponseEntity.ok(emails);
         } else {
             logger.warn("Emails by city not retrieved");
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
     }
 }

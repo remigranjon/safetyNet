@@ -48,10 +48,13 @@ public class PersonService {
                         familyMembers.add(response);
                     }
                     });
-        return ChildrenWithFamilyResponse.builder()
-                .children(children)
-                .familyMembers(familyMembers)
-                .build();
+        if (!children.isEmpty()) {
+            return ChildrenWithFamilyResponse.builder()
+                    .children(children)
+                    .familyMembers(familyMembers)
+                    .build();
+        }
+        return null;
 
 
     }
@@ -89,6 +92,10 @@ public class PersonService {
                 .map(fireStationRepository::findAddressesByStation)
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
+        if (addresses.isEmpty()) {
+            logger.error("Error while getting inhabitants by stations : no addresses found");
+            return null;
+        }
         Set<InhabitantsResponse> responses = new HashSet<>();
         addresses.forEach(address -> {
             Set<Person> persons = personRepository.findByAddress(address);

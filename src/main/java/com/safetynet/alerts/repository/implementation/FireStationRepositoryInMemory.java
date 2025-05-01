@@ -26,12 +26,12 @@ public class FireStationRepositoryInMemory implements FireStationRepository {
     }
 
     @Override
-    public int findStationByAddress(String address) {
+    public Integer findStationByAddress(String address) {
         return fireStations.stream()
                 .filter(fireStation -> fireStation.getAddress().equals(address))
                 .map(FireStation::getStation)
                 .findFirst()
-                .orElse(0);
+                .orElse(null);
     }
 
     @Override

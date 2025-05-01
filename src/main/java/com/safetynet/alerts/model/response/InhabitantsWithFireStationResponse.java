@@ -14,5 +14,5 @@ import java.util.Set;
 @Builder
 public class InhabitantsWithFireStationResponse {
     private Set<PersonWithMedicalRecordResponse> inhabitants;
-    private int station;
+    private Integer station;
 }
