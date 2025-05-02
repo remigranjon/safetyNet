@@ -52,14 +52,14 @@ public class URLsController {
         logger.info("Trying to get inhabitants with fire station by address");
         InhabitantsWithFireStationResponse inhabitantsWithFireStationResponse =
                 personService.getInhabitantsByAddress(address);
-        if (inhabitantsWithFireStationResponse.getInhabitants().isEmpty()||
-                inhabitantsWithFireStationResponse.getStation()== null) {
+        if (inhabitantsWithFireStationResponse.getInhabitants().isEmpty() ||
+                inhabitantsWithFireStationResponse.getStation() == null) {
             logger.warn("No inhabitants found for the given address");
             return ResponseEntity.notFound().build();
         }
-                logger.info("Inhabitants with fire station by address retrieved");
-                return ResponseEntity.ok(inhabitantsWithFireStationResponse);
-        }
+        logger.info("Inhabitants with fire station by address retrieved");
+        return ResponseEntity.ok(inhabitantsWithFireStationResponse);
+    }
 
     @GetMapping("/flood")
     public ResponseEntity<Set<InhabitantsResponse>> getInhabitantsByStations(

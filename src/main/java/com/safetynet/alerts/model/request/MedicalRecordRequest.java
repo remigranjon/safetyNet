@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,6 +36,11 @@ public class MedicalRecordRequest {
     public boolean isValid() {
         return firstName != null && !firstName.isEmpty()
                 && lastName != null && !lastName.isEmpty()
-                && birthdate != null && !birthdate.isEmpty();
+                && birthdate != null && isBirthdateValid();
+    }
+
+    public boolean isBirthdateValid() {
+        String regex = "^(0[1-9]|1[0-2])/([0-2][0-9]|3[01])/\\d{4}$";
+        return Pattern.matches(regex, birthdate);
     }
 }

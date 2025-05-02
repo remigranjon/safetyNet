@@ -34,7 +34,7 @@ public class MedicalRecordService {
     }
 
     public FullMedicalRecordResponse updateMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
-        if (medicalRecordRequest == null || medicalRecordRequest.getFirstName() == null || medicalRecordRequest.getLastName() == null) {
+        if (medicalRecordRequest == null || medicalRecordRequest.getFirstName() == null || medicalRecordRequest.getLastName() == null || medicalRecordRequest.getBirthdate() != null && !medicalRecordRequest.isBirthdateValid()) {
             logger.error("Error while updating medical record : request not valid");
             return null;
         }
