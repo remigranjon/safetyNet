@@ -32,7 +32,7 @@ public class PersonController {
             return new ResponseEntity<>(personResponse, HttpStatus.CREATED);
         } else {
             logger.warn("Person not saved");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -45,7 +45,7 @@ public class PersonController {
             return new ResponseEntity<>(personResponse, HttpStatus.OK);
         } else {
             logger.warn("Person not updated");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -58,7 +58,7 @@ public class PersonController {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             logger.warn("Person not deleted");
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 }

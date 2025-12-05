@@ -3,6 +3,7 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.model.response.FireStationResponse;
 import com.safetynet.alerts.model.response.PersonsWithCountResponse;
 import com.safetynet.alerts.service.FireStationService;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,134 +21,133 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(FireStationController.class)
 class FireStationControllerTests {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private FireStationService fireStationService;
+        @MockBean
+        private FireStationService fireStationService;
 
+        @Nested
+        class GetPersonsByStationTests {
 
-    @Nested
-    class GetPersonsByStationTests {
+                @Test
+                void testGetPersonsByStationWithValidStationNumber() throws Exception {
+                        int stationNumber = 1;
+                        PersonsWithCountResponse mockResponse = new PersonsWithCountResponse();
+                        mockResponse.setAdultCount(2);
+                        mockResponse.setChildrenCount(1);
 
-        @Test
-        void testGetPersonsByStationWithValidStationNumber() throws Exception {
-            int stationNumber = 1;
-            PersonsWithCountResponse mockResponse = new PersonsWithCountResponse();
-            mockResponse.setAdultCount(2);
-            mockResponse.setChildrenCount(1);
+                        when(fireStationService.getPersonsWithCountByStation(stationNumber)).thenReturn(mockResponse);
 
-            when(fireStationService.getPersonsWithCountByStation(stationNumber)).thenReturn(mockResponse);
+                        mockMvc.perform(get("/firestation")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .param("stationNumber", String.valueOf(stationNumber)))
+                                        .andExpect(status().isOk())
+                                        .andExpect(jsonPath("$.adultCount").value(2))
+                                        .andExpect(jsonPath("$.childrenCount").value(1));
+                }
 
-            mockMvc.perform(get("/firestation")
-                            .param("stationNumber", String.valueOf(stationNumber))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.adultCount").value(2))
-                    .andExpect(jsonPath("$.childrenCount").value(1));
+                @Test
+                void testGetPersonsByStationWithInvalidStationNumber() throws Exception {
+                        int stationNumber = -1;
+
+                        when(fireStationService.getPersonsWithCountByStation(stationNumber)).thenReturn(null);
+
+                        mockMvc.perform(get("/firestation")
+                                        .param("stationNumber", String.valueOf(stationNumber))
+                                        .contentType(MediaType.APPLICATION_JSON))
+                                        .andExpect(status().isBadRequest());
+                }
         }
 
-        @Test
-        void testGetPersonsByStationWithInvalidStationNumber() throws Exception {
-            int stationNumber = -1;
+        @Nested
+        class SaveFireStationTests {
 
-            when(fireStationService.getPersonsWithCountByStation(stationNumber)).thenReturn(null);
+                @Test
+                void testSaveFireStation() throws Exception {
+                        String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
 
-            mockMvc.perform(get("/firestation")
-                            .param("stationNumber", String.valueOf(stationNumber))
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isBadRequest());
-        }
-    }
+                        when(fireStationService.saveFireStation(any()))
+                                        .thenReturn(new FireStationResponse("123 Main St", 1));
 
-    @Nested
-    class SaveFireStationTests {
+                        mockMvc.perform(post("/firestation")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(fireStationRequestJson))
+                                        .andExpect(status().isCreated());
+                }
 
-        @Test
-        void testSaveFireStation() throws Exception {
-            String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
+                @Test
+                void testSaveFireStationWithInvalidData() throws Exception {
+                        String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
 
-            when(fireStationService.saveFireStation(any()))
-                    .thenReturn(new FireStationResponse("123 Main St",1));
+                        when(fireStationService.saveFireStation(any()))
+                                        .thenReturn(null);
 
-            mockMvc.perform(post("/firestation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(fireStationRequestJson))
-                    .andExpect(status().isCreated());
-        }
-
-        @Test
-        void testSaveFireStationWithInvalidData() throws Exception {
-            String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
-
-            when(fireStationService.saveFireStation(any()))
-                    .thenReturn(null);
-
-            mockMvc.perform(post("/firestation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(fireStationRequestJson))
-                    .andExpect(status().isBadRequest());
-        }
-    }
-
-    @Nested
-    class UpdateFireStationTests {
-
-        @Test
-        void testUpdateFireStation() throws Exception {
-            String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
-
-            when(fireStationService.updateFireStation(any()))
-                    .thenReturn(new FireStationResponse("123 Main St",1));
-
-            mockMvc.perform(put("/firestation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(fireStationRequestJson))
-                    .andExpect(status().isOk());
+                        mockMvc.perform(post("/firestation")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(fireStationRequestJson))
+                                        .andExpect(status().isBadRequest());
+                }
         }
 
-        @Test
-        void testUpdateFireStationWithInvalidData() throws Exception {
-            String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
+        @Nested
+        class UpdateFireStationTests {
 
-            when(fireStationService.updateFireStation(any()))
-                    .thenReturn(null);
+                @Test
+                void testUpdateFireStation() throws Exception {
+                        String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
 
-            mockMvc.perform(put("/firestation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(fireStationRequestJson))
-                    .andExpect(status().isBadRequest());
+                        when(fireStationService.updateFireStation(any()))
+                                        .thenReturn(new FireStationResponse("123 Main St", 1));
+
+                        mockMvc.perform(put("/firestation")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(fireStationRequestJson))
+                                        .andExpect(status().isOk());
+                }
+
+                @Test
+                void testUpdateFireStationWithInvalidData() throws Exception {
+                        String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
+
+                        when(fireStationService.updateFireStation(any()))
+                                        .thenReturn(null);
+
+                        mockMvc.perform(put("/firestation")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(fireStationRequestJson))
+                                        .andExpect(status().isBadRequest());
+                }
         }
-    }
 
-    @Nested
-    class DeleteFireStationTests {
+        @Nested
+        class DeleteFireStationTests {
 
-        @Test
-        void testDeleteFireStation() throws Exception {
-            String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
+                @Test
+                void testDeleteFireStation() throws Exception {
+                        String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
 
-            when(fireStationService.deleteFireStation(any()))
-                    .thenReturn(true);
+                        when(fireStationService.deleteFireStation(any()))
+                                        .thenReturn(true);
 
-            mockMvc.perform(delete("/firestation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(fireStationRequestJson))
-                    .andExpect(status().isOk());
+                        mockMvc.perform(delete("/firestation")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(fireStationRequestJson))
+                                        .andExpect(status().isOk());
+                }
+
+                @Test
+                void testDeleteFireStationWithInvalidData() throws Exception {
+                        String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
+
+                        when(fireStationService.deleteFireStation(any()))
+                                        .thenReturn(false);
+
+                        mockMvc.perform(delete("/firestation")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(fireStationRequestJson))
+                                        .andExpect(status().isBadRequest());
+                }
         }
-
-        @Test
-        void testDeleteFireStationWithInvalidData() throws Exception {
-            String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
-
-            when(fireStationService.deleteFireStation(any()))
-                    .thenReturn(false);
-
-            mockMvc.perform(delete("/firestation")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(fireStationRequestJson))
-                    .andExpect(status().isBadRequest());
-        }
-    }
 
 }

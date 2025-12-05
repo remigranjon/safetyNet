@@ -28,7 +28,7 @@ public class FireStationController {
             return new ResponseEntity<>(personsWithCountResponse, HttpStatus.OK);
         } else {
             logger.warn("Persons by station not retrieved");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -41,7 +41,7 @@ public class FireStationController {
             return new ResponseEntity<>(fireStationResponse, HttpStatus.CREATED);
         } else {
             logger.warn("Fire station not saved");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -54,7 +54,7 @@ public class FireStationController {
             return new ResponseEntity<>(fireStationResponse, HttpStatus.OK);
         } else {
             logger.warn("Fire station not updated");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -67,7 +67,7 @@ public class FireStationController {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             logger.warn("Fire station not deleted");
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 }

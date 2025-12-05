@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FireStation {
     private String address;
-    private int station;
+    private Integer station;
 
     public FireStationResponse toFireStationResponse() {
         return FireStationResponse.builder()

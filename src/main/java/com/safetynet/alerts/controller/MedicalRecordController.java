@@ -31,7 +31,7 @@ public class MedicalRecordController {
             return new ResponseEntity<>(fullMedicalRecordResponse, HttpStatus.CREATED);
         } else {
             logger.warn("Medical record not saved");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -44,7 +44,7 @@ public class MedicalRecordController {
             return new ResponseEntity<>(fullMedicalRecordResponse, HttpStatus.OK);
         } else {
             logger.warn("Medical record not updated");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -57,7 +57,7 @@ public class MedicalRecordController {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             logger.warn("Medical record not deleted");
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 }

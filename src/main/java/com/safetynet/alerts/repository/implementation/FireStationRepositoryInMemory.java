@@ -18,9 +18,9 @@ public class FireStationRepositoryInMemory implements FireStationRepository {
     }
 
     @Override
-    public Set<String> findAddressesByStation(int station) {
+    public Set<String> findAddressesByStation(Integer station) {
         return fireStations.stream()
-                .filter(fireStation -> fireStation.getStation() == station)
+                .filter(fireStation -> fireStation.getStation().equals(station))
                 .map(FireStation::getAddress)
                 .collect(Collectors.toSet());
     }

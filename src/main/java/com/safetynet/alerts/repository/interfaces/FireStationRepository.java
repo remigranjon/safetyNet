@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Repository
 public interface FireStationRepository {
-    Set<String> findAddressesByStation(int station);
+    Set<String> findAddressesByStation(Integer station);
 
     Integer findStationByAddress(String address);
 
