@@ -140,48 +140,36 @@ public class PersonService {
                 .collect(Collectors.toSet());
     }
 
-    public PersonResponse savePerson(NewPersonRequest personRequest) {
+    public boolean savePerson(NewPersonRequest personRequest) {
         if (personRequest == null || !personRequest.isValid()) {
             logger.error("Error while creating person : request not valid");
-            return null;
+            return false;
         }
         if (personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName()) != null) {
             logger.error("Error while creating person : person already exists");
-            return null;
+            return false;
         }
         Person person = personRequest.getPerson();
-        medicalRecordRepository.save(personRequest.getMedicalRecord());
-       return personRepository.save(person).toPersonResponse();
+        if (!medicalRecordRepository.save(personRequest.getMedicalRecord())) {
+            return false;
+        }
+       return personRepository.save(person);
     }
 
 
-    public PersonResponse updatePerson(PersonRequest personRequest) {
+    public boolean updatePerson(PersonRequest personRequest) {
         if (personRequest == null || personRequest.getFirstName() == null || personRequest.getLastName() == null) {
             logger.error("Error while updating person : request not valid");
-            return null;
+            return false;
         }
-        Person person = personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName());
-        if (person == null) {
-            logger.error("Error while updating person : person not found");
-            return null;
+        boolean personUpdated = personRepository.update(personRequest.toPerson());
+        if (personUpdated) {
+            return true;
         }
-        personRepository.delete(person);
-        if (personRequest.getAddress() != null && !personRequest.getAddress().isEmpty()) {
-            person.setAddress(personRequest.getAddress());
+        else {
+            logger.error("Error while updating person : update failed");
+            return false;
         }
-        if (personRequest.getCity() != null && !personRequest.getCity().isEmpty()) {
-            person.setCity(personRequest.getCity());
-        }
-        if (personRequest.getZip() != null && !personRequest.getZip().isEmpty()) {
-            person.setZip(personRequest.getZip());
-        }
-        if (personRequest.getPhone() != null && !personRequest.getPhone().isEmpty()) {
-            person.setPhone(personRequest.getPhone());
-        }
-        if (personRequest.getEmail() != null && !personRequest.getEmail().isEmpty()) {
-            person.setEmail(personRequest.getEmail());
-        }
-        return  personRepository.save(person).toPersonResponse();
     }
 
     public boolean deletePerson(PersonMinimalRequest personRequest) {
@@ -189,12 +177,12 @@ public class PersonService {
             logger.error("Error while deleting person : request not valid");
             return false;
         }
-        Person person = personRepository.findByFirstNameAndLastName(personRequest.getFirstName(), personRequest.getLastName());
-        if (person == null) {
-            logger.error("Error while deleting person : person not found");
+        boolean personDeleted = personRepository.delete(personRequest.getFirstName(), personRequest.getLastName());
+        if (!personDeleted) {
+            logger.error("Error while deleting person : delete failed");
             return false;
         }
-        return personRepository.delete(person);
+        return true;
     }
 
 

@@ -35,7 +35,7 @@ public class PersonControllerTests {
                     .build();
             ObjectMapper objectMapper = new ObjectMapper();
             when(personService.savePerson(any(NewPersonRequest.class)))
-                    .thenReturn(new PersonResponse());
+                    .thenReturn(true);
             mockMvc.perform(post("/person")
                             .contentType("application/json")
                             .content(objectMapper.writeValueAsString(personRequest)))
@@ -49,7 +49,7 @@ public class PersonControllerTests {
                     .build();
             ObjectMapper objectMapper = new ObjectMapper();
             when(personService.savePerson(any(NewPersonRequest.class)))
-                    .thenReturn(null);
+                    .thenReturn(false);
             mockMvc.perform(post("/person")
                             .contentType("application/json")
                             .content(objectMapper.writeValueAsString(personRequest)))
@@ -66,7 +66,7 @@ public class PersonControllerTests {
                     .build();
             ObjectMapper objectMapper = new ObjectMapper();
             when(personService.updatePerson(any(PersonRequest.class)))
-                    .thenReturn(new PersonResponse());
+                    .thenReturn(true);
             mockMvc.perform(put("/person")
                             .contentType("application/json")
                             .content(objectMapper.writeValueAsString(personRequest)))
@@ -80,7 +80,7 @@ public class PersonControllerTests {
                     .build();
             ObjectMapper objectMapper = new ObjectMapper();
             when(personService.updatePerson(any(PersonRequest.class)))
-                    .thenReturn(null);
+                    .thenReturn(false);
             mockMvc.perform(put("/person")
                             .contentType("application/json")
                             .content(objectMapper.writeValueAsString(personRequest)))

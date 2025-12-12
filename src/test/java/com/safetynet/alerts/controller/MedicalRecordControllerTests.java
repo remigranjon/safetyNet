@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.request.MedicalRecordRequest;
 import com.safetynet.alerts.model.request.MedicationRequest;
 import com.safetynet.alerts.model.request.PersonMinimalRequest;
-import com.safetynet.alerts.model.response.FullMedicalRecordResponse;
 import com.safetynet.alerts.service.MedicalRecordService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -49,7 +47,7 @@ public class MedicalRecordControllerTests {
             ObjectMapper objectMapper = new ObjectMapper();
 
             when(medicalRecordService.saveMedicalRecord(any(MedicalRecordRequest.class)))
-                    .thenReturn(new FullMedicalRecordResponse());
+                    .thenReturn(true);
 
             mockMvc.perform(post("/medicalRecord")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +72,7 @@ public class MedicalRecordControllerTests {
             ObjectMapper objectMapper = new ObjectMapper();
 
             when(medicalRecordService.saveMedicalRecord(any(MedicalRecordRequest.class)))
-                    .thenReturn(null);
+                    .thenReturn(false);
 
             mockMvc.perform(post("/medicalRecord")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +99,7 @@ public class MedicalRecordControllerTests {
             ObjectMapper objectMapper = new ObjectMapper();
 
             when(medicalRecordService.updateMedicalRecord(any(MedicalRecordRequest.class)))
-                    .thenReturn(new FullMedicalRecordResponse());
+                    .thenReturn(true);
 
             mockMvc.perform(put("/medicalRecord")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +124,7 @@ public class MedicalRecordControllerTests {
             ObjectMapper objectMapper = new ObjectMapper();
 
             when(medicalRecordService.updateMedicalRecord(any(MedicalRecordRequest.class)))
-                    .thenReturn(null);
+                    .thenReturn(false);
 
             mockMvc.perform(put("/medicalRecord")
                             .contentType(MediaType.APPLICATION_JSON)

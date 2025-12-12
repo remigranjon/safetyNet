@@ -21,4 +21,9 @@ public class Medication {
                 .dosage(dosage)
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return name + ":" + dosage;
+    }   
 }

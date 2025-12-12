@@ -1,8 +1,5 @@
 {
-  "persons": [
-    ],
-  "firestations": [
-    ],
-  "medicalrecords": [
-    ]
+  "persons": [],
+  "firestations": [],
+  "medicalrecords": []
 }

@@ -68,7 +68,7 @@ class FireStationControllerTests {
                         String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
 
                         when(fireStationService.saveFireStation(any()))
-                                        .thenReturn(new FireStationResponse("123 Main St", 1));
+                                        .thenReturn(true);
 
                         mockMvc.perform(post("/firestation")
                                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +81,7 @@ class FireStationControllerTests {
                         String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
 
                         when(fireStationService.saveFireStation(any()))
-                                        .thenReturn(null);
+                                        .thenReturn(false);
 
                         mockMvc.perform(post("/firestation")
                                         .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +98,7 @@ class FireStationControllerTests {
                         String fireStationRequestJson = "{ \"station\": 1, \"address\": \"123 Main St\" }";
 
                         when(fireStationService.updateFireStation(any()))
-                                        .thenReturn(new FireStationResponse("123 Main St", 1));
+                                        .thenReturn(true);
 
                         mockMvc.perform(put("/firestation")
                                         .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +111,7 @@ class FireStationControllerTests {
                         String fireStationRequestJson = "{ \"station\": -1, \"address\": \"\" }";
 
                         when(fireStationService.updateFireStation(any()))
-                                        .thenReturn(null);
+                                        .thenReturn(false);
 
                         mockMvc.perform(put("/firestation")
                                         .contentType(MediaType.APPLICATION_JSON)

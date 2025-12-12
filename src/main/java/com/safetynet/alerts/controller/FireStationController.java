@@ -1,7 +1,6 @@
 package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.request.FireStationRequest;
-import com.safetynet.alerts.model.response.FireStationResponse;
 import com.safetynet.alerts.model.response.PersonsWithCountResponse;
 import com.safetynet.alerts.service.FireStationService;
 import org.apache.logging.log4j.LogManager;
@@ -33,12 +32,12 @@ public class FireStationController {
     }
 
     @PostMapping
-    public ResponseEntity<FireStationResponse> saveFireStation(@RequestBody FireStationRequest fireStationRequest) {
+    public ResponseEntity<Boolean> saveFireStation(@RequestBody FireStationRequest fireStationRequest) {
         logger.info("Trying to save fire station");
-        FireStationResponse fireStationResponse = fireStationService.saveFireStation(fireStationRequest);
-        if (fireStationResponse != null) {
+        boolean fireStationSaved = fireStationService.saveFireStation(fireStationRequest);
+        if (fireStationSaved) {
             logger.info("Fire station saved");
-            return new ResponseEntity<>(fireStationResponse, HttpStatus.CREATED);
+            return new ResponseEntity<>(true, HttpStatus.CREATED);
         } else {
             logger.warn("Fire station not saved");
             return ResponseEntity.badRequest().build();
@@ -46,12 +45,12 @@ public class FireStationController {
     }
 
     @PutMapping
-    public ResponseEntity<FireStationResponse> updateFireStation(@RequestBody FireStationRequest fireStationRequest) {
+    public ResponseEntity<Boolean> updateFireStation(@RequestBody FireStationRequest fireStationRequest) {
         logger.info("Trying to update fire station");
-        FireStationResponse fireStationResponse = fireStationService.updateFireStation(fireStationRequest);
-        if (fireStationResponse != null) {
+        boolean fireStationUpdated = fireStationService.updateFireStation(fireStationRequest);
+        if (fireStationUpdated) {
             logger.info("Fire station updated");
-            return new ResponseEntity<>(fireStationResponse, HttpStatus.OK);
+            return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             logger.warn("Fire station not updated");
             return ResponseEntity.badRequest().build();

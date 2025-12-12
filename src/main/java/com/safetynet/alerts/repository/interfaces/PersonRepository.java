@@ -14,9 +14,11 @@ public interface PersonRepository {
 
     Set<Person> findByCity(String city);
 
-    Person save(Person person);
+    boolean save(Person person);
 
-    boolean delete(Person person);
+    boolean delete(String firstName, String lastName);
+
+    boolean update(Person person);
 
     Person findByFirstNameAndLastName(String firstName, String lastName);
 }

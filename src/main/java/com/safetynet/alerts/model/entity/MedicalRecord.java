@@ -1,6 +1,7 @@
 package com.safetynet.alerts.model.entity;
 
 
+import com.safetynet.alerts.model.DTO.MedicalRecordDTO;
 import com.safetynet.alerts.model.response.FullMedicalRecordResponse;
 import com.safetynet.alerts.model.response.MedicalRecordResponse;
 import com.safetynet.alerts.utility.DateUtils;
@@ -52,6 +53,16 @@ public class MedicalRecord {
                 .lastName(lastName)
                 .birthdate(birthdate)
                 .medications(medications.stream().map(Medication::toResponse).collect(Collectors.toSet()))
+                .allergies(allergies)
+                .build();
+    }
+
+    public MedicalRecordDTO toDTO() {
+        return MedicalRecordDTO.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .birthdate(birthdate)
+                .medications(medications != null ? medications.stream().map(Medication::toString).collect(Collectors.toSet()) : Set.of())
                 .allergies(allergies)
                 .build();
     }

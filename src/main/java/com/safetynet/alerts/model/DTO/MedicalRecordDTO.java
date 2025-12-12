@@ -38,5 +38,6 @@ public class MedicalRecordDTO {
                 .allergies(allergies)
                 .build();
     }
+   
 }
 

@@ -24,12 +24,12 @@ public class PersonController {
     public PersonController(PersonService personService) {this.personService = personService;}
 
     @PostMapping
-    public ResponseEntity<PersonResponse> savePerson(@RequestBody NewPersonRequest personRequest) {
+    public ResponseEntity<Boolean> savePerson(@RequestBody NewPersonRequest personRequest) {
         logger.info("Trying to save person");
-        PersonResponse personResponse = personService.savePerson(personRequest);
-        if (personResponse != null) {
+        Boolean isSaved = personService.savePerson(personRequest);
+        if (isSaved) {
             logger.info("Person saved");
-            return new ResponseEntity<>(personResponse, HttpStatus.CREATED);
+            return new ResponseEntity<>(true, HttpStatus.CREATED);
         } else {
             logger.warn("Person not saved");
             return ResponseEntity.badRequest().build();
@@ -37,12 +37,12 @@ public class PersonController {
     }
 
     @PutMapping
-    public ResponseEntity<PersonResponse> updatePerson(@RequestBody PersonRequest personRequest) {
+    public ResponseEntity<Boolean> updatePerson(@RequestBody PersonRequest personRequest) {
         logger.info("Trying to update person");
-        PersonResponse personResponse = personService.updatePerson(personRequest);
-        if (personResponse != null) {
+        Boolean isUpdated = personService.updatePerson(personRequest);
+        if (isUpdated) {
             logger.info("Person updated");
-            return new ResponseEntity<>(personResponse, HttpStatus.OK);
+            return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             logger.warn("Person not updated");
             return ResponseEntity.badRequest().build();

@@ -1,9 +1,7 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.model.entity.FireStation;
 import com.safetynet.alerts.model.entity.Person;
 import com.safetynet.alerts.model.request.FireStationRequest;
-import com.safetynet.alerts.model.response.FireStationResponse;
 import com.safetynet.alerts.model.response.PersonMinimalResponse;
 import com.safetynet.alerts.model.response.PersonsWithCountResponse;
 import com.safetynet.alerts.repository.interfaces.FireStationRepository;
@@ -49,33 +47,32 @@ public class FireStationService {
                 .build();
     }
 
-    public FireStationResponse saveFireStation(FireStationRequest fireStationRequest) {
+    public boolean saveFireStation(FireStationRequest fireStationRequest) {
         if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == null || fireStationRequest.getStation() == 0 ) {
             logger.error("Error while creating fire station : request not valid");
-            return null;
+            return false;
         }
-        FireStation fireStationSaved = fireStationRepository.save(fireStationRequest.toFireStation());
-        if (fireStationSaved == null) {
-            logger.error("Error while creating fire station : saving unsuccessful");
-            return null;
+        boolean fireStationSaved = false;
+        try {
+            fireStationSaved = fireStationRepository.save(fireStationRequest.toFireStation());
+        } catch (IllegalArgumentException e) {
+            logger.error("Error while creating fire station : " + e.getMessage());
+            return false;
         }
-        return fireStationSaved.toFireStationResponse();
+        return fireStationSaved;
     }
 
-    public FireStationResponse updateFireStation(FireStationRequest fireStationRequest) {
+    public boolean updateFireStation(FireStationRequest fireStationRequest) {
         if (fireStationRequest.getAddress() == null || fireStationRequest.getStation() == null || fireStationRequest.getStation() == 0) {
             logger.error("Error while updating fire station : request not valid");
-            return null;
+            return false;
         }
-        FireStation fireStation = fireStationRepository.findByAddress(fireStationRequest.getAddress());
-        if (fireStation == null) {
-            logger.error("Error while updating fire station : fire station not found");
-            return null;
+        try { 
+        return fireStationRepository.put(fireStationRequest.getAddress(), fireStationRequest.getStation());
+        } catch (Exception e) {
+            logger.error("Error while updating fire station : " + e.getMessage());
+            return false;
         }
-        fireStationRepository.delete(fireStation);
-        fireStation.setStation(fireStationRequest.getStation());
-        FireStation fireStationUpdated = fireStationRepository.save(fireStation);
-        return fireStationUpdated.toFireStationResponse();
     }
 
     public boolean deleteFireStation( FireStationRequest fireStationRequest) {
@@ -84,19 +81,9 @@ public class FireStationService {
             return false;
         }
         if (fireStationRequest.getAddress() != null) {
-            FireStation fireStation = fireStationRepository.findByAddress(fireStationRequest.getAddress());
-            if (fireStation == null) {
-                logger.error("Error while deleting fire station : fire station not found");
-                return false;
-            }
-            return fireStationRepository.delete(fireStation);
+            return fireStationRepository.deleteAdresse(fireStationRequest.getAddress());
         }
-        Set<FireStation> fireStations = fireStationRepository.findByStation(fireStationRequest.getStation());
-        if (fireStations.isEmpty()) {
-            logger.error("Error while deleting fire station : fire station not found");
-            return false;
-        }
-        fireStations.forEach(fireStationRepository::delete);
+        fireStationRepository.deleteFireStation(fireStationRequest.getStation());
         return true;
     }
 }

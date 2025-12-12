@@ -7,7 +7,9 @@ public interface MedicalRecordRepository {
 
     MedicalRecord findByFirstNameAndLastName(String firstName, String lastName);
 
-    MedicalRecord save(MedicalRecord medicalRecord);
+    boolean save(MedicalRecord medicalRecord);
 
-    boolean delete(MedicalRecord medicalRecord);
+    boolean update(MedicalRecord medicalRecord);
+
+    boolean delete(String firstName, String lastName);
 }

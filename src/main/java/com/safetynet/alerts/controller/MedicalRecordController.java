@@ -2,7 +2,6 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.model.request.MedicalRecordRequest;
 import com.safetynet.alerts.model.request.PersonMinimalRequest;
-import com.safetynet.alerts.model.response.FullMedicalRecordResponse;
 import com.safetynet.alerts.service.MedicalRecordService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,12 +22,12 @@ public class MedicalRecordController {
     }
 
     @PostMapping
-    public ResponseEntity<FullMedicalRecordResponse> saveMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
+    public ResponseEntity<Boolean> saveMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
         logger.info("Trying to save medical record");
-        FullMedicalRecordResponse fullMedicalRecordResponse = medicalRecordService.saveMedicalRecord(medicalRecordRequest);
-        if (fullMedicalRecordResponse != null) {
+        boolean isSaved = medicalRecordService.saveMedicalRecord(medicalRecordRequest);
+        if (isSaved) {
             logger.info("Medical record saved");
-            return new ResponseEntity<>(fullMedicalRecordResponse, HttpStatus.CREATED);
+            return new ResponseEntity<>(true, HttpStatus.CREATED);
         } else {
             logger.warn("Medical record not saved");
             return ResponseEntity.badRequest().build();
@@ -36,12 +35,12 @@ public class MedicalRecordController {
     }
 
     @PutMapping
-    public ResponseEntity<FullMedicalRecordResponse> updateMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
+    public ResponseEntity<Boolean> updateMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
         logger.info("Trying to update medical record");
-        FullMedicalRecordResponse fullMedicalRecordResponse = medicalRecordService.updateMedicalRecord(medicalRecordRequest);
-        if (fullMedicalRecordResponse != null) {
+        boolean isUpdated = medicalRecordService.updateMedicalRecord(medicalRecordRequest);
+        if (isUpdated) {
             logger.info("Medical record updated");
-            return new ResponseEntity<>(fullMedicalRecordResponse, HttpStatus.OK);
+            return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             logger.warn("Medical record not updated");
             return ResponseEntity.badRequest().build();

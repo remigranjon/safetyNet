@@ -1,4 +1,4 @@
-package com.safetynet.alerts.utility.reader;
+package com.safetynet.alerts.utility.enums;
 
 import lombok.Getter;
 
